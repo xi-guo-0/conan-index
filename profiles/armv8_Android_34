@@ -1,0 +1,10 @@
+[settings]
+build_type=Release
+arch=armv8
+os=Android
+os.api_level=34
+compiler=clang
+compiler.libcxx=libc++
+compiler.version=17
+[buildenv]
+CONAN_CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
