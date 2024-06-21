@@ -32,4 +32,4 @@ else
     exit 1
 fi
 
-conan create "$recipe_dir" -pr:b=profiles/armv8_Android_34 "$@"
+conan create "$recipe_dir" -pr=profiles/armv8_Android_34 "$@"

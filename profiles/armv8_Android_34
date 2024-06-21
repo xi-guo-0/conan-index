@@ -6,5 +6,5 @@ os.api_level=34
 compiler=clang
 compiler.libcxx=libc++
 compiler.version=17
-[buildenv]
-CONAN_CMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
+[conf]
+tools.cmake.cmaketoolchain:toolchain_file = "$ANDROID_NDK/build/cmake/android.toolchain.cmake"
