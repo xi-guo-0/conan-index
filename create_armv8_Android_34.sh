@@ -32,4 +32,15 @@ else
     exit 1
 fi
 
+export TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/darwin-x86_64
+export TARGET=aarch64-linux-android
+export API=34
+export AR=$TOOLCHAIN/bin/llvm-ar
+export CC=$TOOLCHAIN/bin/$TARGET$API-clang
+export AS=$CC
+export CXX=$TOOLCHAIN/bin/$TARGET$API-clang++
+export LD=$TOOLCHAIN/bin/ld
+export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
+export STRIP=$TOOLCHAIN/bin/llvm-strip
+
 conan create "$recipe_dir" -pr=profiles/armv8_Android_34 "$@"

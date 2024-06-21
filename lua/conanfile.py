@@ -2,6 +2,7 @@ from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.files import get
 from conan.tools.gnu import Autotools, AutotoolsToolchain
+import os
 
 class luaRecipe(ConanFile):
     name = "lua"
@@ -19,6 +20,11 @@ class luaRecipe(ConanFile):
 
     def build(self):
         autotools = Autotools(self)
-        autotools.make()
+        make_args = []
+        if self.settings.os == "Android":
+            make_args = ["CC={}".format(os.getenv("CC")),
+                         "RANLIB={}".format(os.getenv("RANLIB")),
+                         "linux"]
+        autotools.make(args=make_args)
         autotools.install(args=["INSTALL_TOP={0}".format(self.package_folder)])
         fix_apple_shared_install_name(self)
