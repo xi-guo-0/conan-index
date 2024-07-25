@@ -32,7 +32,13 @@ else
     exit 1
 fi
 
-export TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/darwin-x86_64
+OS="$(uname -s)"
+case "$OS" in
+  Linux*)     TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64;;
+  Darwin*)    TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/darwin-x86_64;;
+  *)          echo "Unknown operating system: $OS" >&2; exit 1;;
+esac
+export TOOLCHAIN
 export TARGET=aarch64-linux-android
 export API=30
 export AR=$TOOLCHAIN/bin/llvm-ar
