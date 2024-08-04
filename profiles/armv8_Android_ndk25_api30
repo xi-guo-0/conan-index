@@ -6,5 +6,6 @@ os.api_level=30
 compiler=clang
 compiler.libcxx=libc++
 compiler.version=14
+compiler.cppstd=20
 [conf]
 tools.cmake.cmaketoolchain:toolchain_file = "$ANDROID_NDK/build/cmake/android.toolchain.cmake"

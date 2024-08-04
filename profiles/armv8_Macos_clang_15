@@ -4,3 +4,4 @@ arch=armv8
 os=Macos
 compiler=clang
 compiler.version=15
+compiler.cppstd=20
