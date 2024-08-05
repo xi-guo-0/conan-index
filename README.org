@@ -2,25 +2,37 @@
 This repository serves as a comprehensive guide and collection of Conanfiles for building and managing C/C++ libraries across various operating systems and architectures. Conan is a popular package manager for C/C++ projects, and this collection aims to streamline the process of dependency management and building for developers.
 
 * Contents
-- **Conanfiles**: Directory containing all Conanfile scripts.
-- **Profiles**: Conan profiles allow users to set a complete configuration set for settings, options, environment variables
-- **Documentation**: Guides and tutorials on using the Conanfiles.
+- Conanfiles: Directory containing all Conanfile scripts.
+- Profiles: Conan profiles allow users to set a complete configuration set for settings, options, environment variables
+- Documentation: Guides and tutorials on using the Conanfiles.
 
 * Getting Started
 To start using the Conanfiles in this repository, follow these steps:
 
-1. **Install Conan**:
+1. Install Conan:
   #+begin_src sh :noeval
 pip install conan
   #+end_src
 
-1. **Clone the Repository**:
+1. Clone the Repository:
   #+begin_src sh :noeval
 git clone https://github.com/xi-guo-0/conan-index.git
 cd conan-index
   #+end_src
 
-1. **Run building scripts**:
+1. Run building scripts:
   #+begin_src sh :noeval
 ./create_x86_64_Linux_gcc_9.4.sh ffmpeg
   #+end_src
+
+* Installing compilers
+** AArch64 Android
+- https://github.com/android/ndk/wiki/Unsupported-Downloads
+** AArch64 Linux
+- https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
+- https://www.linaro.org/downloads/#gnu_and_llvm
+** AArch64 QNX
+- https://www.qnx.com/developers/docs/7.0.0/
+** AMD64 Windows
+- https://www.mingw-w64.org/
+- https://github.com/Jake-Shadle/xwin
