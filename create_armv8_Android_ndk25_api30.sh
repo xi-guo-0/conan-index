@@ -34,19 +34,18 @@ fi
 
 OS="$(uname -s)"
 case "$OS" in
-  Linux*)     TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64;;
-  Darwin*)    TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/darwin-x86_64;;
+  Linux*)     TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/linux-x86_64/bin;;
+  Darwin*)    TOOLCHAIN=$ANDROID_NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin;;
   *)          echo "Unknown operating system: $OS" >&2; exit 1;;
 esac
-export TOOLCHAIN
 export TARGET=aarch64-linux-android
 export API=30
-export AR=$TOOLCHAIN/bin/llvm-ar
-export CC=$TOOLCHAIN/bin/$TARGET$API-clang
+export AR=$TOOLCHAIN/llvm-ar
+export CC=$TOOLCHAIN/$TARGET$API-clang
 export AS=$CC
-export CXX=$TOOLCHAIN/bin/$TARGET$API-clang++
-export LD=$TOOLCHAIN/bin/ld
-export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
-export STRIP=$TOOLCHAIN/bin/llvm-strip
+export CXX=$TOOLCHAIN/$TARGET$API-clang++
+export LD=$TOOLCHAIN/ld
+export RANLIB=$TOOLCHAIN/llvm-ranlib
+export STRIP=$TOOLCHAIN/llvm-strip
 
-conan create "$recipe_dir" -pr=profiles/armv8_Android_ndk25_api30 "$@"
+conan create "$recipe_dir" -pr:h=./profiles/armv8_Android_ndk25_api30 -pr:b=default "$@"

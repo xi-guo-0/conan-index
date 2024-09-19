@@ -5,15 +5,15 @@ from conan.tools.scm import Git
 import os
 import shutil
 
-class ncursesRecipe(ConanFile):
-    name = "ncurses"
-    description = "ncurses (new curses) is a programming library providing an application programming interface (API) that allows writing text-based user interfaces (TUI) in a computer terminal-independent manner"
+class readlineRecipe(ConanFile):
+    name = "readline"
+    description = "get a line from a user with editing"
     license = "GPL"
     settings = "os", "arch", "compiler"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-    version = "v6.4"
-    url = "https://github.com/mirror/ncurses.git"
+    version = "readline-8.2"
+    url = "https://git.savannah.gnu.org/git/readline.git"
 
     def source(self):
         git = Git(self)
@@ -25,12 +25,20 @@ class ncursesRecipe(ConanFile):
         tc.update_configure_args({
             "--bindir": None,
             "--disable-shared": None,
-            "--enable-static": None,
             "--includedir": None,
             "--libdir": None,
             "--oldincludedir": None,
             "--sbindir": None
         })
+        if self.options.shared:
+            tc.update_configure_args({
+                "--enable-static": "NO",
+            })
+        else:
+            tc.update_configure_args({
+                "--enable-shared": "NO",
+            })
+
         if self.settings.os == "Macos":
             tc.configure_args.append("CC=clang")
             tc.configure_args.append("darwin64-arm64")
