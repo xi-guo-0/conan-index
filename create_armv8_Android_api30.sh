@@ -48,4 +48,4 @@ export LD=$TOOLCHAIN/ld
 export RANLIB=$TOOLCHAIN/llvm-ranlib
 export STRIP=$TOOLCHAIN/llvm-strip
 
-conan create "$recipe_dir" -pr:h=./profiles/armv8_Android_ndk25_api30 -pr:b=default "$@"
+conan create "$recipe_dir" -pr:h=./profiles/armv8_Android_api30 -pr:b=default "$@"

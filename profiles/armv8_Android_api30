@@ -2,7 +2,6 @@ include(default)
 
 [settings]
 os=Android
-os.ndk_version=25
 os.api_level=30
 arch=armv8
 compiler=clang
@@ -11,4 +10,4 @@ compiler.libcxx=libc++
 compiler.cppstd=14
 
 [conf]
-tools.android:ndk_path=$ANDROID_NDK
+tools.cmake.cmaketoolchain:toolchain_file = "$ANDROID_NDK/build/cmake/android.toolchain.cmake"
