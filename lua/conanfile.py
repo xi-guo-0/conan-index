@@ -25,6 +25,10 @@ class luaRecipe(ConanFile):
             make_args = ["CC={}".format(os.getenv("CC")),
                          "RANLIB={}".format(os.getenv("RANLIB")),
                          "linux"]
+        elif self.settings.os == "QNX":
+            make_args = ["CC={}".format(os.getenv("CC")),
+                         "RANLIB={}".format(os.getenv("RANLIB")),
+                         "posix"]
         autotools.make(args=make_args)
         autotools.install(args=["INSTALL_TOP={0}".format(self.package_folder)])
         fix_apple_shared_install_name(self)

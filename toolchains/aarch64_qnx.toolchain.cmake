@@ -1,0 +1,76 @@
+set(CMAKE_SYSTEM_NAME QNX)
+set(CMAKE_SYSTEM_VERSION 1)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
+if(NOT DEFINED ENV{QNX_HOST} OR NOT EXISTS $ENV{QNX_HOST})
+    message(FATAL_ERROR "QNX_HOST environment variable is not set or the path does not exist.")
+else()
+    set(QNX_HOST $ENV{QNX_HOST})
+    message(STATUS "QNX_HOST=${QNX_HOST}")
+endif()
+
+if(NOT DEFINED ENV{QNX_TARGET} OR NOT EXISTS $ENV{QNX_TARGET})
+    message(FATAL_ERROR "QNX_TARGET environment variable is not set or the path does not exist.")
+else()
+    set(QNX_TARGET $ENV{QNX_TARGET})
+    message(STATUS "QNX_TARGET=${QNX_TARGET}")
+endif()
+
+if(NOT DEFINED QNX_VERSION)
+    set(QNX_VERSION "qnx7.0.0")
+endif()
+
+if(NOT DEFINED CMAKE_C_COMPILER)
+    set(CMAKE_C_COMPILER "${QNX_HOST}/usr/bin/${CMAKE_SYSTEM_PROCESSOR}-unknown-nto-${QNX_VERSION}-gcc")
+endif()
+if(NOT DEFINED CMAKE_CXX_COMPILER)
+    set(CMAKE_CXX_COMPILER "${QNX_HOST}/usr/bin/${CMAKE_SYSTEM_PROCESSOR}-unknown-nto-${QNX_VERSION}-g++")
+endif()
+
+set(CMAKE_SYSROOT ${QNX_TARGET})
+
+include_directories(${QNX_TARGET}/usr/include/c++/v1)
+
+add_compile_definitions(
+  __LITTLEENDIAN__=1
+  __QNXNTO__=1
+  __QNX__=1
+  _XOPEN_SOURCE=700
+)
+add_compile_options(
+  -fPIC
+  -fexceptions
+  -gdwarf-4
+)
+
+set(TARGET_STRING "aarch64-unknown-nto-${QNX_VERSION}")
+
+set(CMAKE_CXX_COMPILER_TARGET_FORCED TRUE)
+set(CMAKE_C_COMPILER_TARGET_FORCED TRUE)
+set(CMAKE_C_COMPILER_TARGET ${TARGET_STRING})
+set(CMAKE_CXX_COMPILER_TARGET ${TARGET_STRING})
+set(CMAKE_LINKER ${QNX_HOST}/usr/bin/${CMAKE_SYSTEM_PROCESSOR}-unknown-nto-${QNX_VERSION}-ld)
+
+set(LINKER_FLAGS "-Wl,--no-undefined -Wl,--gc-sections -Wl,-z,relro -Wl,-z,now,-lc")
+
+set(CMAKE_FIND_LIBRARY_PREFIXES "lib")
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".so;.a")
+
+set(CMAKE_SHARED_LINKER_FLAGS "${LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS "${LINKER_FLAGS} ${CMAKE_MODULE_LINKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS}")
+
+set(CMAKE_SYSTEM_PREFIX_PATH "/usr/aarch64-unknown-nto-qnx/aarch64le")
+
+if(NOT CMAKE_FIND_ROOT_PATH_MODE_PROGRAM)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+endif()
+if(NOT CMAKE_FIND_ROOT_PATH_MODE_LIBRARY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+endif()
+if(NOT CMAKE_FIND_ROOT_PATH_MODE_INCLUDE)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endif()
+if(NOT CMAKE_FIND_ROOT_PATH_MODE_PACKAGE)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+endif()

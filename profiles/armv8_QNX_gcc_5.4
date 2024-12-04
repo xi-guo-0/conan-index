@@ -1,0 +1,11 @@
+include(default)
+
+[settings]
+os=QNX
+arch=armv8
+compiler=gcc
+compiler.version=5.4
+compiler.cppstd=14
+
+[conf]
+tools.cmake.cmaketoolchain:toolchain_file = "$CONAN_CMAKE_TOOLCHAIN_FILE"
