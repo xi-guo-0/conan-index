@@ -3,6 +3,7 @@ from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.gnu import Autotools, AutotoolsToolchain
 from conan.tools.scm import Git
 import os
+import platform
 import shutil
 
 class ncursesRecipe(ConanFile):
@@ -35,7 +36,11 @@ class ncursesRecipe(ConanFile):
             tc.configure_args.append("CC=clang")
             tc.configure_args.append("darwin64-arm64")
         elif self.settings.os == "Android":
-            env.define("PATH", "{0}/toolchains/llvm/prebuilt/linux-x86_64/bin:{1}".format(os.getenv("ANDROID_NDK"), os.getenv("PATH")))
+            os_name = platform.system()
+            ANDROID_NDK_BIN = "{0}/toolchains/llvm/prebuilt/linux-x86_64/bin".format(os.getenv("ANDROID_NDK"))
+            if os_name == "Darwin":
+                ANDROID_NDK_BIN = "{0}/toolchains/llvm/prebuilt/darwin-x86_64/bin".format(os.getenv("ANDROID_NDK"))
+            env.define("PATH", "{0}:{1}".format(ANDROID_NDK_BIN, os.getenv("PATH")))
             tc.configure_args.append("CC=aarch64-linux-android30-clang")
             tc.configure_args.append("--disable-stripping")
             tc.configure_args.append("--without-cxx")

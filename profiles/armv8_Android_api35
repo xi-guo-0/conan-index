@@ -1,11 +1,13 @@
+include(default)
+
 [settings]
-build_type=Release
-arch=armv8
 os=Android
-os.api_level=34
+os.api_level=35
+arch=armv8
 compiler=clang
+compiler.version=18
 compiler.libcxx=libc++
-compiler.version=17
 compiler.cppstd=20
+
 [conf]
 tools.cmake.cmaketoolchain:toolchain_file = "$ANDROID_NDK/build/cmake/android.toolchain.cmake"
