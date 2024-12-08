@@ -1,8 +1,8 @@
 from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
-from conan.tools.scm import Git
-from conan.tools.gnu import Autotools, AutotoolsToolchain
 from conan.tools.env import Environment
+from conan.tools.files import get
+from conan.tools.gnu import Autotools, AutotoolsToolchain
 import os
 
 class opensshRecipe(ConanFile):
@@ -12,13 +12,13 @@ class opensshRecipe(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-    requires = "openssl/openssl-3.3.1"
-    version = "v_9_7_p1"
-    url = "https://github.com/openssh/openssh-portable.git"
+    requires = "openssl/openssl-3.4.0"
+    tag = "V_9_9_P1"
+    version = tag.lower()
+    url = "https://github.com/openssh/openssh-portable/archive/refs/tags/{0}.tar.gz".format(tag)
 
     def source(self):
-        git = Git(self)
-        git.clone(self.url, target=".", args=["--depth", "1", "--branch", self.version.upper()])
+        get(self, self.url, strip_root=True)
 
     def generate(self):
         env = Environment()
