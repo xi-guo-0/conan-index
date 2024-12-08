@@ -1,8 +1,9 @@
 from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.gnu import Autotools, AutotoolsToolchain
-from conan.tools.scm import Git
+from conan.tools.files import get
 import os
+import platform
 import shutil
 
 class opensslRecipe(ConanFile):
@@ -12,12 +13,11 @@ class opensslRecipe(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-    version = "openssl-3.3.1"
-    url = "https://github.com/openssl/openssl.git"
+    version = "openssl-3.4.0"
+    url = "https://github.com/openssl/openssl/archive/refs/tags/{0}.tar.gz".format(version)
 
     def source(self):
-        git = Git(self)
-        git.clone(self.url, target=".", args=["--depth", "1", "--branch", self.version])
+        get(self, self.url, strip_root=True)
 
     def generate(self):
         shutil.move("Configure", "configure")
@@ -32,11 +32,21 @@ class opensslRecipe(ConanFile):
             "--oldincludedir": None,
             "--sbindir": None
         })
+
+        if self.options.shared:
+            tc.configure_args.append("no-static")
+        else:
+            tc.configure_args.append("no-shared")
+
         if self.settings.os == "Macos":
             tc.configure_args.append("CC=clang")
             tc.configure_args.append("darwin64-arm64")
         elif self.settings.os == "Android":
-            env.define("PATH", "{0}/toolchains/llvm/prebuilt/darwin-x86_64/bin:{1}".format(os.getenv("ANDROID_NDK"), os.getenv("PATH")))
+            os_name = platform.system()
+            ANDROID_NDK_BIN = "{0}/toolchains/llvm/prebuilt/linux-x86_64/bin".format(os.getenv("ANDROID_NDK"))
+            if os_name == "Darwin":
+                ANDROID_NDK_BIN = "{0}/toolchains/llvm/prebuilt/darwin-x86_64/bin".format(os.getenv("ANDROID_NDK"))
+            env.define("PATH", "{0}:{1}".format(ANDROID_NDK_BIN, os.getenv("PATH")))
             tc.configure_args.append("android-arm64")
             tc.configure_args.append("CC=clang")
             tc.configure_args.append("-D__ANDROID_API__={}".format(self.settings.os.api_level))
