@@ -1,19 +1,48 @@
 from conan import ConanFile
-from conan.tools.scm import Git
-from conan.tools.files import copy
-from os.path import join
+from conan.tools.apple import fix_apple_shared_install_name
+from conan.tools.gnu import Autotools, AutotoolsToolchain
+from conan.tools.files import get
+import os
+import shutil
 
 class asioRecipe(ConanFile):
     name = "asio"
     description = "Asio C++ Library"
     license = "Boost Software License"
-    version = "asio-1-28-0"
-    url = "https://github.com/chriskohlhoff/asio.git"
+    settings = "os", "arch", "compiler", "build_type"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": False, "fPIC": True}
+    version = "asio-1-32-0"
+    url = "https://github.com/chriskohlhoff/asio/archive/refs/tags/{0}.tar.gz".format(version)
+
+    def requirements(self):
+        self.requires("openssl/openssl-3.4.0")
 
     def source(self):
-        git = Git(self)
-        clone_args = ["--depth", "1", "--branch", self.version]
-        git.clone(url=self.url, target=".", args=clone_args)
+        get(self, self.url, strip_root=True)
 
-    def package(self):
-        copy(self, "*", join(self.source_folder, "asio", "include"), join(self.package_folder, "include"))
+    def generate(self):
+        tc = AutotoolsToolchain(self)
+        env = tc.environment()
+        tc.update_configure_args({
+            "--includedir": None,
+            "--oldincludedir": None,
+            "--sbindir": None,
+            "--with-openssl": self.dependencies["openssl"].package_folder,
+        })
+        tc.generate(env)
+
+    def build(self):
+        source_dir = 'asio'
+        if os.path.exists(source_dir) and os.path.isdir(source_dir):
+            for item in os.listdir(source_dir):
+                source_path = os.path.join(source_dir, item)
+                destination_path = item
+                shutil.move(source_path, destination_path)
+                pass # for
+            pass # if
+        os.rmdir(source_dir)
+        self.run("autoreconf -fiv")
+        autotools = Autotools(self)
+        autotools.configure()
+        autotools.install()
