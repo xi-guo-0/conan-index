@@ -17,6 +17,10 @@ class vimRecipe(ConanFile):
     version = "v9.1.0902"
     url = "https://github.com/vim/vim/archive/refs/tags/{0}.tar.gz".format(version)
 
+    def requirements(self):
+        if self.settings.os == "Android":
+            self.requires("ncurses/v6.4")
+
     def source(self):
         get(self, self.url, strip_root=True)
 
@@ -29,7 +33,36 @@ class vimRecipe(ConanFile):
             "--sbindir": None,
         })
         if self.settings.os == "Android":
-            pass
+            # Set the HOME environment variable to /data/local/tmp because Android does not set a default root user directory,
+            # which results in the root user's HOME being set to the root directory (/), and the root directory is not writable.
+            # echo 'export HOME="/data/local/tmp"' >> /etc/profile
+
+            # Create the .vimrc configuration file in /data/local/tmp so that Vim can read the default configuration.
+            # This directory is writable and avoids issues with read-only directories like / or /root.
+            # touch /data/local/tmp/.vimrc
+
+            conan.tools.files.replace_in_file(self, "src/auto/configure", " -lrt", " ")
+            env.define("vim_cv_getcwd_broken", "no")
+            env.define("vim_cv_memmove_handles_overlap", "yes")
+            env.define("vim_cv_stat_ignores_slash", "no")
+            env.define("vim_cv_terminfo", "yes")
+            env.define("vim_cv_tgetent", "zero")
+            env.define("vim_cv_toupper_broken", "no")
+            env.define("vim_cv_tty_group", "world")
+            env.define("vim_cv_uname_output", "Android")
+            tc.update_configure_args({
+                "--enable-gui": "no",
+                "--enable-netbeans": "no",
+                "--host": "aarch64-linux-android",
+                "--target": "aarch64-linux-android",
+                "--with-features": "huge",
+                "--with-tlib": "ncurses",
+            })
+            tc.configure_args.append("--enable-multibyte")
+            tc.configure_args.append("--without-x")
+            ncurses = self.dependencies["ncurses"].package_folder
+            env.define("CFLAGS", "-I{0}/include".format(ncurses))
+            env.define("LDFLAGS", "-L{0}/lib".format(ncurses))
         elif self.settings.os == "QNX":
             conan.tools.files.replace_in_file(self, "src/xxd/Makefile", " -DUNIX ", " ")
             conan.tools.files.replace_in_file(self, "src/auto/configure", " -lrt", " ")

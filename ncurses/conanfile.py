@@ -1,7 +1,7 @@
 from conan import ConanFile
 from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.gnu import Autotools, AutotoolsToolchain
-from conan.tools.scm import Git
+from conan.tools.files import get
 import os
 import platform
 import shutil
@@ -14,11 +14,10 @@ class ncursesRecipe(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
     version = "v6.4"
-    url = "https://github.com/mirror/ncurses.git"
+    url = "https://github.com/mirror/ncurses/archive/refs/tags/{0}.tar.gz".format(version)
 
     def source(self):
-        git = Git(self)
-        git.clone(self.url, target=".", args=["--depth", "1", "--branch", self.version])
+        get(self, self.url, strip_root=True)
 
     def generate(self):
         tc = AutotoolsToolchain(self)
