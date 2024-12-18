@@ -13,8 +13,8 @@ class glewRecipe(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
-    version = "2.1.0"
-    url = "https://sourceforge.net/projects/glew/files/glew/{0}/glew-{0}.zip/download".format(version)
+    version = "glew-2.2.0"
+    url = "https://github.com/nigels-com/glew/releases/download/{0}/{0}.zip".format(version)
 
     def source(self):
         get(self, self.url, strip_root=True)
