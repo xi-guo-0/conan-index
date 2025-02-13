@@ -1,6 +1,5 @@
 from conan import ConanFile
 from conan.tools.cmake import CMake
-from conan.tools.apple import fix_apple_shared_install_name
 from conan.tools.files import get
 import os
 
@@ -10,6 +9,7 @@ class s7Recipe(ConanFile):
     description = "a Scheme interpreter"
     license = "0-clause BSD"
     generators = "CMakeDeps", "CMakeToolchain"
+    no_copy_source = True
     settings = "os", "arch", "compiler", "build_type"
     version = "latest"
     options = {"shared": [True, False], "fPIC": [True, False]}
@@ -18,7 +18,6 @@ class s7Recipe(ConanFile):
 
     def source(self):
         get(self, self.url, strip_root=True)
-        self._generate_cmakelists()
 
     def _generate_cmakelists(self):
         cmake_content = """
@@ -72,7 +71,7 @@ install(
         return cmake
 
     def build(self):
+        self._generate_cmakelists()
         cmake = self.configure_cmake()
         cmake.build()
         cmake.install()
-        fix_apple_shared_install_name(self)
