@@ -5,9 +5,9 @@ os=Android
 os.api_level=35
 arch=armv8
 compiler=clang
-compiler.version=18
-compiler.libcxx=libc++
-compiler.cppstd=20
+compiler.version=19
+compiler.libcxx=c++_shared
+compiler.cppstd=23
 
 [conf]
-tools.cmake.cmaketoolchain:toolchain_file = "$ANDROID_NDK/build/cmake/android.toolchain.cmake"
+tools.android:ndk_path={{ os.getenv("ANDROID_NDK") }}
