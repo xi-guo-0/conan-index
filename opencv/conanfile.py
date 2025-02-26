@@ -1,6 +1,6 @@
 import conan
 from conan import ConanFile
-from conan.tools.scm import Git
+from conan.tools.files import get
 from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
 
 
@@ -27,12 +27,11 @@ class opencvRecipe(ConanFile):
         "with_android_native_camera": False,
         "BUILD_opencv_dnn": True,
     }
-    version = "4.10.0"
-    url = "https://github.com/opencv/opencv.git"
+    version = "4.11.0"
+    url = f"https://github.com/opencv/opencv/archive/refs/tags/{version}.zip"
 
     def source(self):
-        git = Git(self)
-        git.clone(self.url, target=".", args=["--depth", "1", "--branch", self.version])
+        get(self, self.url, strip_root=True)
         conan.tools.files.replace_in_file(
             self,
             "cmake/OpenCVInstallLayout.cmake",
@@ -76,7 +75,6 @@ class opencvRecipe(ConanFile):
 
         variables["CMAKE_POSITION_INDEPENDENT_CODE"] = convert_to_cmake_boolean(True)
         if self.settings.os == "Android":
-            variables["ANDROID_ABI"] = self.options.ANDROID_ABI
             variables["ANDROID_ABI"] = self.options.ANDROID_ABI
             variables["ANDROID_NATIVE_API_LEVEL"] = self.settings.os.api_level
             variables["BUILD_ANDROID_EXAMPLES"] = convert_to_cmake_boolean(False)

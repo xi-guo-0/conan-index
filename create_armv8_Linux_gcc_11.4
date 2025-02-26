@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+recipe_dir="$1"
+shift
+
+export AR=aarch64-linux-gnu-ar
+export AS=aarch64-linux-gnu-as
+export CC=aarch64-linux-gnu-gcc
+export CHOST=aarch64-linux-gnu
+export CXX=aarch64-linux-gnu-g++
+export LD=aarch64-linux-gnu-ld
+export RANLIB=aarch64-linux-gnu-ranlib
+export STRIP=aarch64-linux-gnu-strip
+
+conan create "$recipe_dir" -pr:h=./profiles/armv8_Linux_gcc_11.4 -pr:b=default "$@"

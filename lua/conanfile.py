@@ -4,9 +4,12 @@ from conan.tools.files import get
 from conan.tools.gnu import Autotools, AutotoolsToolchain
 import os
 
+
 class luaRecipe(ConanFile):
     name = "lua"
-    description = "Lua is a powerful, efficient, lightweight, embeddable scripting language"
+    description = (
+        "Lua is a powerful, efficient, lightweight, embeddable scripting language"
+    )
     license = "MIT"
     generators = "AutotoolsToolchain"
     settings = "os", "arch", "compiler", "build_type"
@@ -21,14 +24,20 @@ class luaRecipe(ConanFile):
     def build(self):
         autotools = Autotools(self)
         make_args = []
+
+        for env_var in ["CC", "RANLIB"]:
+            if os.getenv(env_var):
+                make_args.append(f"{env_var}={os.getenv(env_var)}")
+                pass  # if
+            pass  # for
+
         if self.settings.os == "Android":
-            make_args = ["CC={}".format(os.getenv("CC")),
-                         "RANLIB={}".format(os.getenv("RANLIB")),
-                         "linux"]
-        elif self.settings.os == "QNX":
-            make_args = ["CC={}".format(os.getenv("CC")),
-                         "RANLIB={}".format(os.getenv("RANLIB")),
-                         "posix"]
+            make_args.append("linux")
+            pass  # if
+        elif self.settings.os == "Neutrino":
+            make_args.append("posix")
+            pass  # elif
+
         autotools.make(args=make_args)
         autotools.install(args=["INSTALL_TOP={0}".format(self.package_folder)])
         fix_apple_shared_install_name(self)
