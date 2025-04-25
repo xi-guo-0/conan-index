@@ -15,8 +15,8 @@ class tvmRecipe(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": True, "fPIC": True}
-    version = "v0.18.0"
-    url = "https://github.com/apache/tvm/releases/download/{0}.rc0/apache-tvm-src-{0}.tar.gz".format(
+    version = "v0.19.0"
+    url = "https://github.com/apache/tvm/releases/download/{0}/apache-tvm-src-{0}.tar.gz".format(
         version
     )
 
